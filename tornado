@@ -1,0 +1,26 @@
+#!/bin/sh
+
+### OPTIONS AND VARIABLES ###
+
+if [ -n "$1" ] && [ $1 == "-n" ]; then
+	new_install="yes"
+else
+	new_install=$(printf "no\\nyes" | dmenu -i -p "New Install?")
+fi
+
+### FUNCTIONS ###
+
+
+### THE ACTUAL SCRIPT ###
+
+#-n is new install
+if [ "$new_install" == "yes" ]; then
+	echo "New Install Selected"
+	sh $PWD/apps "-n"
+	sh $PWD/settings "-n"
+	sh $PWD/files "-n"
+else
+	sh $PWD/apps
+	sh $PWD/settings
+	sh $PWD/files
+fi

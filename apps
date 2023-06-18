@@ -1,0 +1,203 @@
+#!/bin/sh
+
+### OPTIONS AND VARIABLES ###
+
+#todo: move here
+	#folder_location
+
+	reset="\033[0m"
+	red=$(tput setaf 1)
+
+### FUNCTIONS ###
+
+
+xapkzip() {
+	#this just renames zip, extracts in a folder of id name, and removed OG xapk file
+
+	folder_location="$PWD/apkpure/"
+	file=$1
+			#OLD: for file in "$folder_location"/*.xapk; do
+			#OLD: Go through each .xapk file in the folder
+	  # Get the file name without the extension
+	  filename=$(basename "$file")
+	  filename_without_extension="${filename%.*}"
+
+	  # Change the extension to .zip
+	  new_filename="$folder_location/$filename_without_extension.zip"
+	  mv "$file" "$new_filename"
+
+	  # Create a folder with the name of the filename
+	  folder_path="$folder_location/$filename_without_extension"
+	  mkdir "$folder_path"
+
+	  # Extract the .zip to the current directory
+	  unzip -d "$folder_path" "$new_filename"
+
+	rm "$new_filename"
+			#OLD: done
+}
+
+
+vercomp () {
+	#https://stackoverflow.com/questions/4023830/how-to-compare-two-strings-in-dot-separated-version-format-in-bash
+	#with minimal changes
+    if [[ $1 == $2 ]]
+    then
+        return 0
+    fi
+    local IFS=.
+    local i ver1=($1) ver2=($2)
+    # fill empty fields in ver1 with zeros
+    for ((i=${#ver1[@]}; i<${#ver2[@]}; i++))
+    do
+        ver1[i]=0
+    done
+    for ((i=0; i<${#ver1[@]}; i++))
+    do
+        if [[ -z ${ver2[i]} ]]
+        then
+            # fill empty fields in ver2 with zeros
+            ver2[i]=0
+        fi
+        if ((10#${ver1[i]} > 10#${ver2[i]}))
+        then
+            return 1
+        fi
+        if ((10#${ver1[i]} < 10#${ver2[i]}))
+        then
+            return 2
+        fi
+    done
+    return 0
+}
+
+testvercomp () {
+    vercomp $1 $2
+    case $? in
+        0) op='=';;
+        1) op='>';;
+        2) op='<';;
+    esac
+    #if [[ $op != $3 ]]
+    #then
+        #echo "FAIL: Expected '$3', Actual '$op', Arg1 '$1', Arg2 '$2'"
+    #else
+        #echo "Pass: '$1 $op $2'"
+    #fi
+echo $op
+}
+
+
+
+
+### THE ACTUAL SCRIPT ###
+
+
+echo "if repo changed:"
+fdroidcl update
+echo ""
+
+csv_file="$PWD/apps.csv"
+total_line_num=$(grep -v "^#" $PWD/apps.csv | wc -l)
+count=0
+
+for line in $(cat "$csv_file"); do
+  if [[ $line == \#* ]]; then
+    continue
+  fi
+
+store=$(echo $line | cut -d',' -f1)
+title=$(echo $line | cut -d',' -f2)
+id=$(echo $line | cut -d',' -f3)
+
+
+
+
+((count++))
+echo "$title: $count/$total_line_num ($store)"
+
+
+
+
+
+if [ "$store" == "f" ]; then
+	fdroidcl install $id
+	#echo "f"
+fi
+
+
+
+if [ "$store" == "p" ]; then
+	online_version=$(apkeep -a $id -l | awk -F "|" '{print $2}'| tr ',' '\n' | sort -V | tail -n 1)
+	device_version=$(adb shell dumpsys package $id | grep -o 'versionName=[0-9.]*' | awk -F "=" '{print $2}')
+
+	echo Device: $device_version
+	echo Online: $online_version
+
+	#sign=$(sh $PWD/vercomp "$online_version" "$device_version")
+	#testvercomp $1 $2 $3
+	sign=$(testvercomp "$online_version" "$device_version")
+		if [ "$sign" = "=" ]; then
+		    action="skipping | Same version"
+		elif [ "$sign" = "<" ]; then
+		    action="skipping | Device higher version"
+		elif [ "$sign" = ">" ]; then
+		    action="updating | Online higher version"
+		fi
+	echo $action
+
+	if [ "$sign" = ">" ]; then
+			apkeep -a $id $PWD/apkpure
+		if [ -e "$PWD/apkpure/$id.apk" ]; then
+			adb install $PWD/apkpure/$id.apk
+			rm $PWD/apkpure/$id.apk
+		fi
+		if [ -e "$PWD/apkpure/$id.xapk" ]; then
+			echo "its XAPK format"
+			file=$PWD/apkpure/$id.xapk
+			xapkzip "$file"
+				IFS=',' read -ra elements <<< "$line"
+				array=()
+
+			if (( ${#elements[@]} >= 4 )); then
+				if [[ "${elements[3]}" = "all" ]]; then
+					folder="$PWD/apkpure/$id/"
+					# Find all files ending in .apk in the specified folder
+					apk_files=$(find "$folder" -type f -name "*.apk" -exec basename {} \; | tr '\n' ' ')
+					echo "installing all .apk files in folder $folder"
+					cd apkpure/$id/
+					adb install-multiple $apk_files
+					cd ..
+					cd ..
+				else
+					output="${elements[@]:3}"
+					echo "installing: $output"
+					cd apkpure/$id/
+					adb install-multiple $output
+					cd ..
+					cd ..
+				fi
+				rm -rf "$folder"
+			#remove the unzipped dir and all its files after
+			else
+			    echo -e "${red}missing required elements for XAPK format.${reset}"
+			    echo -e "Example .csv line for xapk: p,streetView,com.google.android.street,${red}com.google.android.street.apk,config.en.apk${reset}"
+			    echo "--- now skipping"
+			fi
+		fi
+	fi
+fi
+
+
+
+if [ -n "$1" ] && [ $1 == "-n" ] && [ "$store" == "m" ]; then
+	adb install $HOME/000mine/apk/$id.apk
+	#echo "m"
+fi
+if [ -z "$1" ] && [ "$store" = "m" ]; then
+	echo "skipping, not a new install"
+	echo "pass with \"-n\" to also install local apks"
+fi
+
+echo ""
+done

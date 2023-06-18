@@ -1,0 +1,42 @@
+#!/bin/sh
+
+	#copy_location=$(adb shell ls /storage/ | dmenu -i -p "Copy Location?")
+	#	if [ "$copy_location" == "emulated" ]; then
+	#		copy_spot="storage/emulated/0"
+	#	else
+	#		copy_spot="storage/"$copy_location
+	#	fi
+
+
+
+
+#pull dcim, screenshots, voice recordings, call recordings, downloads, documents
+echo ""
+echo "Pulling files from Device"
+	adb pull /storage/62E7-3E12/DCIM/ $PWD/yank
+	adb pull /storage/emulated/0/DCIM/ $PWD/yank
+	adb pull /storage/emulated/0/Simple\ Voice\ Recorder/ $PWD/yank
+	adb pull /storage/emulated/0/Call\ Recorder/ $PWD/yank
+	adb pull /storage/emulated/0/Download/ $PWD/yank
+	adb pull /storage/emulated/0/Documents/ $PWD/yank
+
+echo ""
+echo "Pushing files to Device"
+	#copy files from
+	mine_loc=$HOME
+	music="$HOME/mu"
+	#comics="$HOME/comics"
+	#tvmovies="$HOME/tvmovies"
+
+	#echo "$copy_spot"
+
+	#will overwrite
+	if [ -n "$1" ] && [ $1 == "-n" ]; then
+		adb push $mine_loc/000mine/ $copy_spot
+		adb push $music $copy_spot/000mine
+		adb push $mine_loc/map/files $copy_spot/Android/data/net.osmand.plus/
+	else
+		adb push $music/rollingR/Rolling6 /storage/62E7-3E12/000mine/mu/rollingR
+		adb push $mine_loc/000mine/info /storage/62E7-3E12/000mine
+		adb push $mine_loc/000mine/apk /storage/62E7-3E12/000mine
+	fi

@@ -1,0 +1,78 @@
+#!/bin/sh
+
+### OPTIONS AND VARIABLES ###
+
+#adb shell settings list system
+#adb shell settings list global
+#adb shell settings list secure
+
+alias sy='adb shell settings put system'
+alias gl='adb shell settings put global'
+alias se='adb shell settings put secure'
+alias di='sudo adb shell pm disable-user'
+
+### FUNCTIONS ###
+
+### THE ACTUAL SCRIPT ###
+
+echo ""
+echo "Pushing Settings to Device"
+
+if [ -n "$1" ] && [ $1 == "-n" ]; then
+
+	#se accessibility_display_daltonizer 0
+		#set grayscale
+	#se accessibility_display_daltonizer_enabled 1
+		#enable color mods
+	sy homecity_timezone America/New_York
+	#adb shell settings put secure ringtone_CONSTANT_PATH=?path=%2Fstorage%2Femulated%2F0%2Fsoundname.m4a&is_cached=1
+	#anther one for notification sound
+	se enabled_accessibility_services \"\"
+	se enabled_accessibility_services com.google.android.marvin.talkback/com.google.android.accessibility.accessibilitymenu.AccessibilityMenuService
+	sy shown_max_brightness_dialog 0
+	sy volumekey_mode 0
+		#sets volume key to control media volume
+	sy time_12_24 24
+	#adb shell cmd package set-home-activity app.olaunchercf/.YourLauncherActivity #command wrong
+	se double_tap_to_wake 0
+	se double_tap_to_wake_up 0
+	se double_tap_to_sleep 0
+	se wake_gesture_enabled 0
+	sy lift_to_wake 0
+	se volume_hush_gesture 0
+	se hush_gesture_used 0
+	se silence_gesture 0
+	se skip_gesture 0
+	se lock_screen_allow_private_notifications 0
+
+	di com.google.android.youtube
+	di com.microsoft.office.excel
+	di com.samsung.android.game.gamehome
+	di com.microsoft.skydrive
+	di com.microsoft.office.word
+	di com.microsoft.office.powerpoint
+	di com.facebook.katana
+	di com.linkedin.android
+
+	adb shell ime enable com.simplemobiletools.keyboard/.services.SimpleKeyboardIME
+	adb shell ime disable com.sec.android.inputmethod/.SamsungKeypad
+		#add a grep here with "adb shell ime list -s" for different OEMs
+	adb shell ime set com.simplemobiletools.keyboard/.services.SimpleKeyboardIME
+
+#emergency contract on homescreen
+#info on lockscreen
+fi
+
+
+sy volume_ring_speaker 15
+sy volume_music_speaker 0
+sy volume_alarm 11
+sy volume_alarm_speaker 11
+
+
+sy display_battery_percentage 1
+sy screen_brightness 255
+sy airplane_mode_on 0
+
+adb shell svc nfc disable
+adb shell am start -a android.bluetooth.adapter.action.REQUEST_DISABLE
