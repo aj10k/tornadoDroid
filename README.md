@@ -4,7 +4,7 @@
 - Never change settings manually again.
 - Never be without key files again.
 - No root required.
-- No phone install requied.
+- No phone app install required.
 
 ![](HERE_IT_COMES.png)
 
@@ -36,12 +36,12 @@
 	- edit pull locations (DCIM ...)
 
 ## Dependencies
-	adb
-	fdroidcl
-	apkeep
-	dmenu
+- adb
+- fdroidcl
+- apkeep
+- dmenu
 
 ## Extra
-	- check out this guide to adb: [https://github.com/wuseman/adb-shell](https://github.com/wuseman/adb-shell)
-	- similar idea on pc: [https://larbs.xyz/](https://larbs.xyz/)
-	- ["if your XAPK file contains a .obb file (you should see a folder named Android), then run also the following: adb push Android\obb\com.application.name /storage/emulated/0/Android/obb/ (replace com.application.name with the name of the apk you are installing)."](https://android.stackexchange.com/a/234797)
+- check out this guide to adb: [https://github.com/wuseman/adb-shell](https://github.com/wuseman/adb-shell)
+- similar idea on pc: [https://larbs.xyz/](https://larbs.xyz/)
+- ["if your XAPK file contains a .obb file (you should see a folder named Android), then run also the following: adb push Android\obb\com.application.name /storage/emulated/0/Android/obb/ (replace com.application.name with the name of the apk you are installing)."](https://android.stackexchange.com/a/234797)
