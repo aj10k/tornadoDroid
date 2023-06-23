@@ -34,7 +34,6 @@ p,waze,com.waze
 p,uber,com.ubercab
 p,shelly,cloud.shelly.smartcontrol
 p,recentNotification,com.libin.notification
-#p,streetView,com.google.android.street
 p,streetView,com.google.android.street,all
 p,GoogleMaps,com.android.apps.maps
 p,GoogleAccessibilitySuite,com.google.android.marvin.talkback

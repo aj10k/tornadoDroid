@@ -8,22 +8,22 @@
 	#	fi
 
 
-
+yank_spot="$HOME/.phone/yank/"
 
 #pull dcim, screenshots, voice recordings, call recordings, downloads, documents
 echo ""
 echo "Pulling files from Device"
-	adb pull /storage/62E7-3E12/DCIM/ $PWD/yank
-	adb pull /storage/emulated/0/DCIM/ $PWD/yank
-	adb pull /storage/emulated/0/Simple\ Voice\ Recorder/ $PWD/yank
-	adb pull /storage/emulated/0/Call\ Recorder/ $PWD/yank
-	adb pull /storage/emulated/0/Download/ $PWD/yank
-	adb pull /storage/emulated/0/Documents/ $PWD/yank
+	adb pull /storage/62E7-3E12/DCIM/ $yank_spot
+	adb pull /storage/emulated/0/DCIM/ $yank_spot
+	adb pull /storage/emulated/0/Simple\ Voice\ Recorder/ $yank_spot
+	adb pull /storage/emulated/0/Call\ Recorder/ $yank_spot
+	adb pull /storage/emulated/0/Download/ $yank_spot
+	adb pull /storage/emulated/0/Documents/ $yank_spot
 
 echo ""
 echo "Pushing files to Device"
 	#copy files from
-	mine_loc=$HOME
+	mine_loc="$HOME/.phone"
 	music="$HOME/mu"
 	#comics="$HOME/comics"
 	#tvmovies="$HOME/tvmovies"
@@ -40,3 +40,4 @@ echo "Pushing files to Device"
 		adb push $mine_loc/000mine/info /storage/62E7-3E12/000mine
 		adb push $mine_loc/000mine/apk /storage/62E7-3E12/000mine
 	fi
+	adb push $HOME/0Fork/Alon5/wg/ /storage/62E7-3E12/000mine
