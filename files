@@ -23,7 +23,7 @@ echo "Pulling files from Device"
 echo ""
 echo "Pushing files to Device"
 	#copy files from
-	mine_loc="$HOME/.phone"
+	mine_loc="$HOME/.zprivate/phone"
 	music="$HOME/mu"
 	#comics="$HOME/comics"
 	#tvmovies="$HOME/tvmovies"
@@ -37,6 +37,7 @@ echo "Pushing files to Device"
 		adb push $mine_loc/map/files $copy_spot/Android/data/net.osmand.plus/
 	else
 		adb push $music/rollingR/Rolling6 /storage/62E7-3E12/000mine/mu/rollingR
+			#adb push rollingR/Rolling6 /storage/62E7-3E12/000mine/mu/rollingR
 		adb push $music/z_akira /storage/62E7-3E12/000mine/mu/
 		adb push $mine_loc/000mine/info /storage/62E7-3E12/000mine
 		adb push $mine_loc/000mine/apk /storage/62E7-3E12/000mine
