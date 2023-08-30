@@ -31,7 +31,7 @@ p,renpho,com.qingniu.renpho
 p,rotationcontrol,org.crape.rotationcontrol
 p,signal,org.thoughtcrime.securesms
 p,waze,com.waze
-p,uber,com.ubercab
+#p,uber,com.ubercab
 p,shelly,cloud.shelly.smartcontrol
 p,recentNotification,com.libin.notification
 p,streetView,com.google.android.street,all

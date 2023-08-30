@@ -14,6 +14,9 @@ fi
 ### THE ACTUAL SCRIPT ###
 
 #-n is new install
+
+adb devices
+
 if [ "$new_install" == "yes" ]; then
 	echo "New Install Selected"
 	sh $PWD/apps "-n"

@@ -1,5 +1,6 @@
 # tornadoDroid
 
+Deploy and maintain Apps, Settings, and Files to an android device in a repeatable fashion
 - Never open an app store again.
 - Never change settings manually again.
 - Never be without key files again.
