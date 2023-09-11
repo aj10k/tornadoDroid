@@ -22,6 +22,8 @@ f,Termux,com.termux
 f,TermuxBOOT,com.termux.boot
 f,OsmAnd,net.osmand.plus
 f,K9email,com.fsck.k9
+f,PasswordStore,dev.msfjarvis.aps
+f,OpenKeychain,org.sufficientlysecure.keychain
 p,shazam,com.shazam.android
 p,googleWallet,com.google.android.apps.walletnfcrel
 p,simplii,com.pcfinancial.mobile
